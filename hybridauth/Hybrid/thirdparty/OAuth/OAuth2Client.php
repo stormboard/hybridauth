@@ -286,4 +286,3 @@ class OAuth2Client
     return $this->api( $url, 'PATCH', $parameters );
  }
 }
->>>>>>> 619a9aa3bed0d415e0ee98cd5f832938eba21f1a
