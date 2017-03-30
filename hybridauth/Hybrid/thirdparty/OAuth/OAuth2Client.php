@@ -43,6 +43,14 @@ class OAuth2Client
 
   //--
 
+  public function __construct( $client_id = false, $client_secret = false, $redirect_uri='', $compressed = false )
+  {
+    $this->client_id       = $client_id;
+    $this->client_secret   = $client_secret;
+    $this->redirect_uri    = $redirect_uri;
+    $this->curl_compressed = $compressed;
+  }
+
   public function authorizeUrl( $extras = array() )
   {
     $params = array(
