@@ -23,6 +23,8 @@ class OAuth2Client
   public $access_token_expires_in = "" ;
   public $access_token_expires_at = "" ;
 
+  public $auth_bearer      = false;
+
   //--
 
   public $sign_token_name          = "access_token";
@@ -209,7 +211,14 @@ class OAuth2Client
     Hybrid_Logger::info( "Enter OAuth2Client::request( $url )" );
     Hybrid_Logger::debug( "OAuth2Client::request(). dump request params: ", serialize( $params ) );
 
-	$urlEncodedParams = http_build_query($params, '', '&');
+    if($this->auth_bearer){
+      if(!empty($params[$this->sign_token_name])){
+        $this->curl_header[] = 'Authorization: Bearer '.$params[$this->sign_token_name];
+        unset($params[$this->sign_token_name]);
+      }
+    }
+
+	  $urlEncodedParams = http_build_query($params, '', '&');
 
     if( $type == "GET" ){
       $url = $url . ( strpos( $url, '?' ) ? '&' : '?' ) . $urlEncodedParams;
