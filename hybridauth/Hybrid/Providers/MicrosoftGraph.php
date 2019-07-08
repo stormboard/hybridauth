@@ -7,12 +7,10 @@
  */
 
 /**
- * Windows Live OAuth2 Class
+ * Microsoft Graph OAuth2 Class
  *
  * @package             HybridAuth providers package
- * @author              Lukasz Koprowski <azram19@gmail.com>
- * @version             0.2
- * @license             BSD License
+ * @author              Stormboard
  */
 
 /**
@@ -57,23 +55,11 @@ class Hybrid_Providers_MicrosoftGraph extends Hybrid_Provider_Model_OAuth2{
       throw new Exception("User profile request failed! {$this->providerId} returned an invalid response: ".Hybrid_Logger::dumpData($data), 6);
     }
 
-    $this->user->profile->identifier = (property_exists($data, 'id')) ? $data->id : "";
-    $this->user->profile->firstName = (property_exists($data, 'first_name')) ? $data->first_name : "";
-    $this->user->profile->lastName = (property_exists($data, 'last_name')) ? $data->last_name : "";
-    $this->user->profile->displayName = (property_exists($data, 'name')) ? trim($data->name) : "";
-    $this->user->profile->gender = (property_exists($data, 'gender')) ? $data->gender : "";
-
-    //wl.basic
-    $this->user->profile->profileURL = (property_exists($data, 'link')) ? $data->link : "";
-
-    //wl.emails
-    $this->user->profile->email = (property_exists($data, 'emails')) ? $data->emails->account : "";
-    $this->user->profile->emailVerified = (property_exists($data, 'emails')) ? $data->emails->account : "";
-
-    //wl.birthday
-    $this->user->profile->birthDay = (property_exists($data, 'birth_day')) ? $data->birth_day : "";
-    $this->user->profile->birthMonth = (property_exists($data, 'birth_month')) ? $data->birth_month : "";
-    $this->user->profile->birthYear = (property_exists($data, 'birth_year')) ? $data->birth_year : "";
+    $this->user->profile->identifier = property_exists($data, 'id') ? $data->id : '';
+    $this->user->profile->firstName = property_exists($data, 'givenName') ? $data->givenName : '';
+    $this->user->profile->lastName = property_exists($data, 'surname') ? $data->surname : '';
+    $this->user->profile->displayName = property_exists($data, 'displayName') ? trim($data->displayName) : '';
+    $this->user->profile->email = property_exists($data, 'userPrincipalName') ? $data->userPrincipalName : '';
 
     return $this->user->profile;
   }
