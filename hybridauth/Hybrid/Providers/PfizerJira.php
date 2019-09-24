@@ -61,19 +61,26 @@ class Hybrid_Providers_PfizerJira extends Hybrid_Provider_Model_OAuth2{
         throw new DataValidationException('Access Token is not defined', 500);
       }
 
-      $res = $client->get($this->echoUrl, [
+      $params = [
+        'first' => 'one',
+        'second' => 'two'
+      ];
+
+      $res = $client->post($this->echoUrl, [
+        'form_params' => $params,
         'headers' => [
           'Authorization' => 'Bearer '.$credentials['access_token']
         ],
       ]);
 
       $response = (string)$res->getBody();
+
       Stormboard\Log::info('PfizerDev Pong', [
         'code' => $res->getStatusCode(),
-        'response' => (string)$res->getBody(),
+        'response' => $response,
       ]);
 
-      return true;
+      return $response === http_build_query($params);
     }catch(DataValidationException | BadResponseException $e){
       Stormboard\Log::error('PfizerDev Ping Error', [
         'code' => $e->getCode(),
