@@ -14,7 +14,7 @@ use GuzzleHttp\Exception\BadResponseException;
 
 class Hybrid_Providers_PfizerJira extends Hybrid_Provider_Model_OAuth2{
 
-  protected $tokenUrl = 'https://devfederate.pfizer.com/as/token.oauth2?grant_type=client_credentials';
+  protected $tokenUrl = 'https://prodfederate.pfizer.com/as/token.oauth2?grant_type=client_credentials';
   protected $echoUrl = 'https://easi-echo-service-dev.cloudhub.io/echo';
 
   /**
