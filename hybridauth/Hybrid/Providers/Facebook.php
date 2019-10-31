@@ -1,4 +1,4 @@
-a<?php
+<?php
 
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Facebook as FacebookSDK;
