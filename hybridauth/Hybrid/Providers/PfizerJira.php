@@ -37,7 +37,7 @@ class Hybrid_Providers_PfizerJira extends Hybrid_Provider_Model_OAuth2{
 
     $stdClass = new stdClass();
     $stdClass->access_token = time();
-    $stdClass->token_type = "Basic";
+    $stdClass->token_type = 'Basic';
     $stdClass->expires_in = 3600 * 24 * 365 * 5; // 5 years
     $stdClass->authorization = base64_encode($this->config['keys']['id'].':'.$this->config['keys']['secret']);
 
