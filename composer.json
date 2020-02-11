@@ -18,7 +18,7 @@
         "gitter": "https://gitter.im/hybridauth/hybridauth"
     },
     "require": {
-        "php": ">=5.2.0",
+        "php": ">=7.0.0",
         "ext-curl": "*",
         "facebook/graph-sdk": "^5.4"
     },
