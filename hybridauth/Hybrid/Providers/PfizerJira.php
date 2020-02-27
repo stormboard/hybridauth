@@ -24,6 +24,32 @@ class Hybrid_Providers_PfizerJira extends Hybrid_Provider_Model_OAuth2{
    */
   public function refreshToken(){
 
+    return $this->generateBasicAuthToken();
+  }
+
+  /**
+   * February 2020, they switched to Basic Auth, but Jira like OAuth,
+   * so we're piggybacking on the refreshToken to set the auth
+   *
+   * @return stdClass
+   */
+  private function generateBasicAuthToken(): stdClass{
+
+    $stdClass = new stdClass();
+    $stdClass->access_token = time();
+    $stdClass->token_type = 'Basic';
+    $stdClass->expires_in = 3600 * 24 * 365 * 5; // 5 years
+    $stdClass->authorization = base64_encode($this->config['keys']['id'].':'.$this->config['keys']['secret']);
+
+    return $stdClass;
+  }
+  /**
+   * Retrieve a current access_token
+   *
+   * @return stdClass
+   */
+  private function refreshOAuthToken(): stdClass{
+
     $token = null;
     $client = new HTTPClient();
 
