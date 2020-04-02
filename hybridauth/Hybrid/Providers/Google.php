@@ -91,8 +91,8 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 		}
 
 		$this->user->profile->identifier = (property_exists($verified, 'id')) ? $verified->id : ((property_exists($response, 'id')) ? $response->id : "");
-		$this->user->profile->firstName = (property_exists($response, 'name')) ? $response->name->givenName : "";
-		$this->user->profile->lastName = (property_exists($response, 'name')) ? $response->name->familyName : "";
+		$this->user->profile->firstName = (property_exists($response, 'name') && property_exists($response->name, 'givenName')) ? $response->name->givenName : "";
+		$this->user->profile->lastName = (property_exists($response, 'name') && property_exists($response->name, 'familyName')) ? $response->name->familyName : "";
 		$this->user->profile->displayName = (property_exists($response, 'displayName')) ? $response->displayName : "";
 		$this->user->profile->photoURL = (property_exists($response, 'image')) ? ((property_exists($response->image, 'url')) ? substr($response->image->url, 0, -2) . "200" : '') : '';
 		$this->user->profile->profileURL = (property_exists($response, 'url')) ? $response->url : "";
