@@ -22,12 +22,12 @@ class Hybrid_Providers_AzureDevOps extends Hybrid_Provider_Model_OAuth2{
 
     // Provider apis end-points
     $this->api->auth_bearer = true;
-    $this->api->api_base_url = "https://app.vssps.visualstudio.com/oauth2";
-    $this->api->authorize_url = "https://app.vssps.visualstudio.com/oauth2/authorize";
-    $this->api->token_url = "https://app.vssps.visualstudio.com/oauth2/token";
+    $this->api->api_base_url = 'https://app.vssps.visualstudio.com/oauth2';
+    $this->api->authorize_url = 'https://app.vssps.visualstudio.com/oauth2/authorize';
+    $this->api->token_url = 'https://app.vssps.visualstudio.com/oauth2/token';
+    $this->api->redirect_uri = 'https://stormboard.com/auth/azuredevops';
 
-    // Override the redirect uri when it's set in the config parameters. This way we prevent
-    // redirect uri mismatches when authenticating with Live.com
+    // ability to override the redirect_uri
     if(isset($this->config['redirect_uri']) && !empty($this->config['redirect_uri'])){
       $this->api->redirect_uri = $this->config['redirect_uri'];
     }
@@ -50,7 +50,7 @@ class Hybrid_Providers_AzureDevOps extends Hybrid_Provider_Model_OAuth2{
           'client_assertion' => urlencode($this->api->client_secret),
           'grant_type' => 'refresh_token',
           'assertion' => urlencode($this->api->refresh_token),
-          'redirect_uri' => 'https://mdbstormboard.ngrok.io/auth/azuredevops'
+          'redirect_uri' => $this->api->redirect_uri
         ],
       ]);
 
