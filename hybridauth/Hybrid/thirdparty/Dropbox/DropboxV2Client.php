@@ -2,6 +2,7 @@
 
 class DropboxV2Client extends OAuth2Client{
 
+  public static $decode_json = true;
   /**
    * Format and sign an oauth for provider api
    */
@@ -21,8 +22,8 @@ class DropboxV2Client extends OAuth2Client{
         break;
     }
 
-    if($response && $this->decode_json){
-      $response = json_decode($response);
+    if($response && self::$decode_json){
+      $response = json_decode($response, true);
     }
 
     return $response;
@@ -31,7 +32,10 @@ class DropboxV2Client extends OAuth2Client{
   private function request($url, $params, $type = "GET"){
     Hybrid_Logger::info("Enter DropboxV2Client::request( $url )");
     Hybrid_Logger::debug("DropboxV2Client::request(). dump request params: ", serialize($params));
-    $this->curl_header[] = 'Authorization : Bearer '.$this->api->access_token;
+
+    if(!empty($this->api->access_token)){
+      $this->curl_header[] = 'Authorization : Bearer '.$this->api->access_token;
+    }
 
     if($type == "GET"){
       $url = $url.(strpos($url, '?') ? '&' : '?').http_build_query($params, '', '&');
@@ -50,8 +54,10 @@ class DropboxV2Client extends OAuth2Client{
     if($type == "POST"){
       curl_setopt($ch, CURLOPT_POST, 1);
 
-      $this->curl_header[] = 'Content-Type: application/json';
-      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+      if(!empty($params)){
+        $this->curl_header[] = 'Content-Type: application/json';
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+      }
     }
     curl_setopt($ch, CURLOPT_HTTPHEADER, $this->curl_header);
 
