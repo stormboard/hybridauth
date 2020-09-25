@@ -69,7 +69,7 @@ class Hybrid_Providers_Dropbox extends Hybrid_Provider_Model_OAuth2{
       $this->api->curl_header = array(
         'Authorization: Bearer '.$this->api->access_token,
       );
-      $response = $this->api->api("users/get_current_account", 'POST', null);
+      $user = $this->api->api("users/get_current_account", 'POST', null);
     }catch(DropboxException $e){
       throw new Exception("User profile request failed! {$this->providerId} returned an error: $e", 6);
     }
@@ -79,38 +79,15 @@ class Hybrid_Providers_Dropbox extends Hybrid_Provider_Model_OAuth2{
       throw new Exception("User profile request failed! {$this->providerId} returned an error. ".$this->errorMessageByStatus($this->api->http_code), 6);
     }
 
-    $user = json_decode($response);
-    if(!is_object($user) || !isset($user->account_id)){
+    if(!is_array($user) || !isset($user['account_id'])){
       throw new Exception("User profile request failed! {$this->providerId} api returned an invalid response.", 6);
     }
     # store the user profile.
-    $this->user->profile->identifier = (property_exists($user, 'account_id')) ? $user->account_id : "";
-    $this->user->profile->profileURL = "";
-    $this->user->profile->webSiteURL = "";
-    $this->user->profile->photoURL = "";
-    $this->user->profile->firstName = (property_exists($user, 'name')) ? (property_exists($user->name, 'display_name')) ? $user->name->display_name : "" : "";
-    $this->user->profile->description = "";
-    $this->user->profile->firstName = (property_exists($user, 'name')) ? (property_exists($user->name, 'given_name')) ? $user->name->given_name : "" : "";
-    $this->user->profile->lastName = (property_exists($user, 'name')) ? (property_exists($user->name, 'surname')) ? $user->name->surname : "" : "";
-    $this->user->profile->gender = "";
-    $this->user->profile->language = "";
-    $this->user->profile->age = "";
-    $this->user->profile->birthDay = "";
-    $this->user->profile->birthMonth = "";
-    $this->user->profile->birthYear = "";
-    $this->user->profile->email = (property_exists($user, 'email')) ? $user->email : "";
-    $this->user->profile->emailVerified = "";
-    if(property_exists($user, 'email_verified')){
-      if($user->email_verified){
-        $this->user->profile->emailVerified = $this->user->profile->email;
-      }
-    }
-    $this->user->profile->phone = "";
-    $this->user->profile->address = "";
-    $this->user->profile->country = (property_exists($user, 'country')) ? $user->country : "";
-    $this->user->profile->region = "";
-    $this->user->profile->city = "";
-    $this->user->profile->zip = "";
+    $this->user->profile->identifier = isset($user['account_id']) ? $user['account_id'] : '';
+    $this->user->profile->firstName = (isset($user['name']) ? (isset($user['name']['display_name']) ? $user['name']['display_name'] :'') : '');
+    $this->user->profile->firstName = (isset($user['name']) ? (isset($user['name']['given_name']) ? $user['name']['given_name'] :'') : '');
+    $this->user->profile->lastName = (isset($user['name']) ? (isset($user['name']['surname']) ? $user['name']['surname'] :'') : '');
+    $this->user->profile->email = isset($user['email']) ? $user['email'] : '';
 
     return $this->user->profile;
   }
