@@ -3,6 +3,8 @@
 class DropboxV2Client extends OAuth2Client{
 
   public static $decode_json = true;
+  public static $empty_body = false;
+
   /**
    * Format and sign an oauth for provider api
    */
@@ -54,7 +56,7 @@ class DropboxV2Client extends OAuth2Client{
     if($type == "POST"){
       curl_setopt($ch, CURLOPT_POST, 1);
 
-      if(!empty($params)){
+      if(!self::$empty_body){
         $this->curl_header[] = 'Content-Type: application/json';
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
       }
@@ -78,6 +80,8 @@ class DropboxV2Client extends OAuth2Client{
     $this->http_info = array_merge($this->http_info, curl_getinfo($ch));
 
     curl_close($ch);
+
+    self::$empty_body = false;
 
     return $response;
   }
